@@ -74,7 +74,7 @@ Please type :
 
     # Calculates simple interest for the user and returns the total
     # final value of their investment.
-        # Converted for use in calculations.
+    # Converted for use in calculations.
     percent = interest_rate / 100
     if interest_type == "simple":
         simp_interest = deposit * (1 + percent*years)
