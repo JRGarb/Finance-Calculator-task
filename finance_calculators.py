@@ -3,6 +3,23 @@ interest on a loan, depending on user choice of calculation.'''
 
 import math
 
+
+''' This function will take numerical input from the user and ensure it 
+is correctly formatted for use in calculations, as well as preventing
+unsuitable input such as strings.'''
+def user_info(variable, format):
+    while True:
+        try:
+            info = format(input(f'''
+    Please enter the value of your {variable} (no symbols) :
+    '''))
+            break
+        except ValueError:
+            print("Error - not a valid number.")
+            continue
+    return info
+
+
 user_choice = """
 Investment - to calculate the amount of interest you'll earn on your investment.
 Bond       - to calculate the monthly amount you will have to pay on a home loan.
@@ -25,43 +42,22 @@ while True:
         break
 
 if calc_type == "investment":
+    # Asks for user's deposit amount, percentage interest rate, and period
+    # of investment in years.
+    deposit = user_info("deposit", float)
+    print(f'''
+Deposit amount : £{deposit:.2f}
+''')
 
-    # Asks for user's deposit amount and restricts it to numbers only.
-    while True:
-        try:
-            deposit = float(input('''
-Please enter the value of the deposit amount : £
-'''))
-            print(f"\nDeposit amount : £{deposit}")
-            break
-        except ValueError:
-            print("Error - entry not a valid number.")
+    interest_rate = user_info("percentage interest rate (%)", float)
+    print(f'''
+Interest rate : {interest_rate:.2f} %
+''')
 
-    # Asks for user's interest percentage and restricts it to numbers only.
-    while True:
-        try:
-            interest_rate = float(input('''
-Please enter your percentage interest rate (%) :
-'''))
-            print(f"\nInterest rate : {interest_rate} %")
-            break
-        except ValueError:
-            print("Error - entry not a valid number.")
-
-    # Converts user percentage into a decimal equivalent for use in calculation.
-    percent = interest_rate / 100
-
-    # Asks for the number of years user wants to calculate interest 
-    # for and restricts it to whole numbers only.
-    while True:
-        try:
-            years = int(input('''
-Please enter the number of years to calculate for :
-'''))
-            print(f"\nYears : {years} ")
-            break
-        except ValueError:
-            print("Error - entry not a valid number.")
+    years = user_info("investment period in years", int)
+    print(f'''
+Years to calculate for : {years}
+''')
 
     # Prompts user to select simple or compound interest calculation.
     interest_type = input("""
@@ -78,6 +74,8 @@ Please type :
 
     # Calculates simple interest for the user and returns the total
     # final value of their investment.
+        # Converted for use in calculations.
+    percent = interest_rate / 100
     if interest_type == "simple":
         simp_interest = deposit * (1 + percent*years)
         simp_interest = round(simp_interest, 2)
@@ -90,51 +88,31 @@ The total value of the investment at the end of the investment period will be :
     # value of their investment.
     if interest_type == "compound":
         comp_interest =  deposit * math.pow((1 + percent) , years)
-        comp_interest = round(comp_interest, 2)
         print(f'''
 The total value of the investment at the end of the investment period will be :
-£ {comp_interest}.
+£ {comp_interest:.2f}.
 ''')
 
 if calc_type == "bond":
-    # Asks the user for the current house value and restricts it to numbers only.
-    while True:
-        try:
-            house_value = float(input('''
-Please enter the current value of your house (no symbols):
-£ '''))
-            print(f"\nHouse value amount : £{house_value}")
-            break
-        except ValueError:
-            print("Error - entry not a valid number.")
-    
-    # Asks the user for their interest rate and restricts it to numbers only.
-    while True:
-        try:
-            interest_rate = float(input('''
-Please enter your annual percentage interest rate (%) :
-'''))
-            print(f"\nAnnual interest rate : {interest_rate} %")
-            break
-        except ValueError:
-            print("Error - entry not a valid number.")
+    # Asks the user for the current house value, interest rate and repayment 
+    # period in months.
+    house_value = user_info("house", float)
+    print(f'''
+House value amount : £{house_value:.2f}
+''')
 
-    # Converts user percentage into a monthly decimal for use in calculation.
-    percent = interest_rate / 100
-    month_percent = percent / 12
+    interest_rate = user_info("annual percentage interest rate", float)
+    print(f'''
+Annual interest rate : {interest_rate:.2f} (%)
+''')
 
-    # Asks the user for the number of months they are repaying over.
-    while True:
-        try:
-            months = int(input('''
-Please enter the number of months you have to repay the loan :
-'''))
-            print(f"\nMonths to repay : {months}")
-            break
-        except ValueError:
-            print("Error - entry not a valid number.")
+    months = user_info("repayment period in months", int)
+    print(f'''
+Months to repay : {months}
+''')
 
     # Calculates the users monthly repayment amount and returns it to them.
+    percent = interest_rate / 100
+    month_percent = percent / 12
     month_repay = (month_percent * house_value) / (1 - (1 + month_percent) ** (-months))
-    month_repay = round(month_repay, 2)
-    print(f"\nYour monthly repayment amount is : £ {month_repay}.")
+    print(f"\nYour monthly repayment amount is : £ {month_repay:.2f}.")
